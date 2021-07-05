@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 
+import {useState, useEffect} from 'react';
 import {Table, TableHead, TableBody, TableRow, TableCell, Paper} from '@material-ui/core';
 import {withStyles} from '@material-ui/core/styles'
 import Customer from './components/Customer';
@@ -16,43 +17,56 @@ const styles = theme=>({
   }
 });
 
-const customer = {
-  id: "1",
-  image: "https://placeimg.com/64/64/any",
-  name: "홍길동",
-  birthday: "760419",
-  gender: "남성",
-  job: "대학생"
+// const customer = {
+//   id: "1",
+//   image: "https://placeimg.com/64/64/any",
+//   name: "홍길동",
+//   birthday: "760419",
+//   gender: "남성",
+//   job: "대학생"
+// };
+
+// const customers = [
+//   {
+//     id: "1",
+//     image: "https://placeimg.com/64/64/1",
+//     name: "홍길동",
+//     birthday: "760419",
+//     gender: "남성",
+//     job: "대학생"
+//   } ,
+//   {
+//     id: "2",
+//     image: "https://placeimg.com/64/64/2",
+//     name: "김길동",
+//     birthday: "860419",
+//     gender: "남성",
+//     job: "개발자"
+//   },
+//   {
+//     id: "3",
+//     image: "https://placeimg.com/64/64/3",
+//     name: "이길동",
+//     birthday: "860519",
+//     gender: "여성",
+//     job: "공무원"
+//   }
+// ];
+
+const callApi = async ()=>{
+  const response = await fetch('/api/customers');
+  const body = await response.json();
+  return body;
 };
-
-const customers = [
-  {
-    id: "1",
-    image: "https://placeimg.com/64/64/1",
-    name: "홍길동",
-    birthday: "760419",
-    gender: "남성",
-    job: "대학생"
-  } ,
-  {
-    id: "2",
-    image: "https://placeimg.com/64/64/2",
-    name: "김길동",
-    birthday: "860419",
-    gender: "남성",
-    job: "개발자"
-  },
-  {
-    id: "3",
-    image: "https://placeimg.com/64/64/3",
-    name: "이길동",
-    birthday: "860519",
-    gender: "여성",
-    job: "공무원"
-  }
-];
-
 function App({classes}) {
+  const [customers, setCustomers] = useState([]);
+
+  useEffect(()=>{
+    callApi()
+    .then(res=>setCustomers(res))
+    .catch(err=>console.error(err));
+  }, []);
+  
   return (
     <Paper className={classes.root}>
       {/* <img src={logo} lat="logo"/>
@@ -77,7 +91,7 @@ function App({classes}) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {customers.map(c=>{
+          {customers && customers.map(c=>{
             return <Customer id={c.id}
             image={c.image}
             name={c.name}
